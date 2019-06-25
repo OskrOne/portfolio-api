@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.27" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GBM.Portfolio.Model\GBM.Portfolio.Model.csproj" />
+  </ItemGroup>
+
+</Project>
