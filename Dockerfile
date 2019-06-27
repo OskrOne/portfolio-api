@@ -10,8 +10,15 @@
 #RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+#FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
+FROM dotnetcorejava
 WORKDIR /app
 #COPY --from=build-env /app/GBM.Portfolio.API/out .
+COPY dynamodb ./dynamodb
 COPY GBM.Portfolio.API/out .
-ENTRYPOINT ["dotnet", "GBM.Portfolio.API.dll"]
+COPY start.sh /opt/bin/
+#RUN apt-get update
+#RUN apt-get --assume-yes install default-jre
+#RUN java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar ./dynamodb/DynamoDBLocal.jar -sharedDb
+#ENTRYPOINT ["dotnet", "GBM.Portfolio.API.dll"]
+ENTRYPOINT ["/opt/bin/start.sh"]

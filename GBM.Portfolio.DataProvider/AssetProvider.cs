@@ -51,7 +51,7 @@ namespace GBM.Portfolio.DataProvider
             foreach (var item in items) {
                 var asset = new Asset();
                 asset.ContractId = item["ContractId"].S;
-                asset.InstrumentId = item["InstrumentId"].N;
+                asset.InstrumentId = item["InstrumentId"].S;
 
                 if (item.ContainsKey("Quantity")) {
                     asset.Quantity = int.Parse(item["Quantity"].N);

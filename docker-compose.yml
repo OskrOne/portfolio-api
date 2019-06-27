@@ -1,18 +1,16 @@
 version: '3'
 services:
   dynamo:
-    image: cnadiminti/dynamodb-local
-#    environment:
-#      - ./Djava.library.path=./DynamoDBLocal_lib
+    image: amazon/dynamodb-local
     ports:
       - "8000:8000"
-#    working_dir: /home/dynamodblocal
-#    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb"]
+    networks:
+      - mynet
   api:
     image: "aspnetapp"
     ports:
       - "8080:80"
-    depends_on:
-      - dynamo
-    links:
-      - "dynamo:dynamo"
+    networks:
+      - mynet
+networks:
+  mynet:

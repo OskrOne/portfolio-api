@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GBM.Portfolio.API.EventSourcing\GBM.Portfolio.API.EventSourcing.csproj" />
     <ProjectReference Include="..\GBM.Portfolio.DataProvider\GBM.Portfolio.DataProvider.csproj" />
     <ProjectReference Include="..\GBM.Portfolio.Model\GBM.Portfolio.Model.csproj" />
   </ItemGroup>

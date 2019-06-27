@@ -12,14 +12,12 @@ namespace GBM.Portfolio.DataProvider
         public Amazon.RegionEndpoint RegionEndpoint { get; set; }
     }
 
-    internal class Provider {
+    public class Provider {
         public static AmazonDynamoDBClient GetAmazonDynamoDBClient(ProviderConfig config)
         {
             AmazonDynamoDBClient dbClient;
-            Console.WriteLine("Aca voy");
             if (config.Local)
             {
-                Console.WriteLine("DynamoDB Local, URL: " + config.DynamoDBURL);
                 AmazonDynamoDBConfig clientConfig = new AmazonDynamoDBConfig
                 {
                     ServiceURL = config.DynamoDBURL,

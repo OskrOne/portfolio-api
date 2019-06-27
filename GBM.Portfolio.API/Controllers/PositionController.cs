@@ -5,29 +5,28 @@ using Microsoft.Extensions.Configuration;
 
 namespace GBM.Portfolio.DataAccess.Controllers
 {
-    [Route("api/contract/")]
+    [Route("api/portfolio/")]
     [ApiController]
     public class PositionController : ControllerBase
     {
-        private IConfiguration Config;
+        private ProviderConfig ProviderConfig;
 
         public PositionController(IConfiguration configuration)
         {
-            Config = configuration;
+            ProviderConfig = new ProviderConfig()
+            {
+                Local = bool.Parse(configuration["AWS:Local"]),
+                DynamoDBURL = configuration["AWS:DynamoDBURL"],
+                AwsAccessKeyId = configuration["AWS:AccessKeyId"],
+                AwsSecretAccessKey = configuration["AWS:SecretAccessKey"],
+                RegionEndpoint = Amazon.RegionEndpoint.USWest2 // TODO: Include this configuration in AppSettings
+            };
         }
 
         [HttpGet("{contractId}/position")]
         public ActionResult<Contract> Get(string contractId)
         {
-            var config = new ProviderConfig()
-            {
-                Local =  bool.Parse(Config["AWS:Local"]),
-                DynamoDBURL = Config["AWS:DynamoDBURL"],
-                AwsAccessKeyId = Config["AWS:AccessKeyId"],
-                AwsSecretAccessKey = Config["AWS:SecretAccessKey"],
-                RegionEndpoint = Amazon.RegionEndpoint.USWest2 // TODO: Include this configuration in AppSettings
-            };
-            var provider = new ContractProvider(config);
+            var provider = new PortfolioProvider(ProviderConfig);
             return provider.Get(contractId);
         }
     }

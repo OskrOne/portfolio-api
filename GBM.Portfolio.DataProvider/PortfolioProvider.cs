@@ -6,20 +6,20 @@ using GBM.Portfolio.Model;
 
 namespace GBM.Portfolio.DataProvider
 {
-    public class ContractProvider
+    public class PortfolioProvider
     {
         private readonly AmazonDynamoDBClient DbClient;
-        private readonly string ContractTableName = "Contract";
+        private readonly string ContractTableName = "Portfolio";
 
-        public ContractProvider() {
+        public PortfolioProvider() {
             DbClient = new AmazonDynamoDBClient();
         }
 
-        public ContractProvider(ProviderConfig config) {
+        public PortfolioProvider(ProviderConfig config) {
             DbClient = Provider.GetAmazonDynamoDBClient(config);
         }
 
-        public ContractProvider(AmazonDynamoDBClient client) {
+        public PortfolioProvider(AmazonDynamoDBClient client) {
             DbClient = client;
         }
 

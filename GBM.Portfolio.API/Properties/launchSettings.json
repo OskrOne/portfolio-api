@@ -11,7 +11,7 @@
     "IIS Express": {
         "commandName": "IISExpress",
         "launchBrowser": true,
-        "launchUrl": "api/contract/A100/position",
+        "launchUrl": "api/portfolio/A100/position",
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development"
         }
@@ -19,7 +19,7 @@
     "GBM.Portfolio.API": {
         "commandName": "Project",
         "launchBrowser": true,
-        "launchUrl": "api/contract/A100/position",
+        "launchUrl": "api/portfolio/A100/position",
         "applicationUrl": "http://localhost:5000",
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development"
