@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using GBM.Portfolio.Domain.Events;
 using GBM.Portfolio.Domain.Models.Events;
 using GBM.Portfolio.Domain.Repositories;
 
