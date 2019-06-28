@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GBM.Portfolio.Domain.Events\GBM.Portfolio.Domain.Events.csproj" />
     <ProjectReference Include="..\GBM.Portfolio.Model\GBM.Portfolio.Domain.Models.csproj" />
   </ItemGroup>
 

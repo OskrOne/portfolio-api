@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GBM.Portfolio.Domain.Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GBM.Portfolio.Domain.Repositories", "GBM.Portfolio.Domain.Repositories\GBM.Portfolio.Domain.Repositories.csproj", "{4143AC96-FB62-42A5-8578-1B644F598666}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GBM.Portfolio.Domain.Events", "GBM.Portfolio.Domain.Events\GBM.Portfolio.Domain.Events.csproj", "{C95147C1-2F60-4787-83D6-88484C7C4BAA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{4143AC96-FB62-42A5-8578-1B644F598666}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4143AC96-FB62-42A5-8578-1B644F598666}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4143AC96-FB62-42A5-8578-1B644F598666}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C95147C1-2F60-4787-83D6-88484C7C4BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C95147C1-2F60-4787-83D6-88484C7C4BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C95147C1-2F60-4787-83D6-88484C7C4BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C95147C1-2F60-4787-83D6-88484C7C4BAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
