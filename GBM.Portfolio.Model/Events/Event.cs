@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace GBM.Portfolio.Model.Events
+namespace GBM.Portfolio.Domain.Models.Events
 {
     [JsonConverter(typeof(EventJsonConverter))]
     public class Event

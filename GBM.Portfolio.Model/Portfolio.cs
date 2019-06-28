@@ -1,6 +1,6 @@
-﻿namespace GBM.Portfolio.Model
+﻿namespace GBM.Portfolio.Domain.Models
 {
-    public class Contract
+    public class Portfolio
     {
         public string ContractId { get; set; }
         public decimal BuyingPower { get; set; }

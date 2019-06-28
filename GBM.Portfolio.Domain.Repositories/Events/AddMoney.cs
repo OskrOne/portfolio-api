@@ -1,33 +1,28 @@
 ﻿using System.Collections.Generic;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using GBM.Portfolio.DataProvider;
-using GBM.Portfolio.Model.Events;
+using GBM.Portfolio.Domain.Events;
+using GBM.Portfolio.Domain.Models.Events;
+using GBM.Portfolio.Domain.Repositories;
 
-namespace GBM.Portfolio.API.EventSourcing.Handlers
+namespace GBM.Portfolio.Domain.Repositories.Events
 {
-    public class AddMoneyEvent : EventHandler
+    public class AddMoneyEvent : BaseRepository, IHandleEvent
     {
-        public AddMoneyEvent() : base()
-        {
-        }
+        public AddMoneyEvent() : base() { }
 
-        public AddMoneyEvent(ProviderConfig config) : base(config)
-        {
-        }
+        public AddMoneyEvent(RepositoryConfig config) : base(config) { }
 
-        public AddMoneyEvent(IAmazonDynamoDB client) : base(client)
-        {
-        }
+        public AddMoneyEvent(IAmazonDynamoDB client) : base(client) { }
 
-        public override TransactWriteItem GetInsertEvent(Event _event)
+        private TransactWriteItem GetInsertEvent(Event _event)
         {
-            var @event = (EventAddMoney)_event;
+            var @event = (Models.Events.AddMoney)_event;
             var transact = new TransactWriteItem()
             {
                 Put = new Put()
                 {
-                    TableName = Constants.PortfolioEventTableName,
+                    TableName = Tables.PortfolioEvents,
                     Item = new Dictionary<string, AttributeValue>() {
                         { "ContractId", new AttributeValue() { S = @event.ContractId } },
                         { "TimeStamp", new AttributeValue(){ S = @event.TimeSpan.ToString() } },
@@ -40,14 +35,14 @@ namespace GBM.Portfolio.API.EventSourcing.Handlers
             return transact;
         }
 
-        public override TransactWriteItem GetUpdateState(Event _event)
+        private TransactWriteItem GetUpdateState(Event _event)
         {
-            var @event = (EventAddMoney)_event;
+            var @event = (Models.Events.AddMoney)_event;
             var transact = new TransactWriteItem()
             {
                 Update = new Update()
                 {
-                    TableName = Constants.PortfolioTableName,
+                    TableName = Tables.Portfolio,
                     Key = new Dictionary<string, AttributeValue>() {
                         { "ContractId", new AttributeValue(){  S = @event.ContractId} }
                     },
@@ -61,14 +56,16 @@ namespace GBM.Portfolio.API.EventSourcing.Handlers
             return transact;
         }
 
-        public override void Handle(Event _event)
+        public void Handle(Event @event)
         {
             var request = new TransactWriteItemsRequest();
-            var transactWriteItems = new List<TransactWriteItem>();
-            transactWriteItems.Add(GetInsertEvent(_event));
-            transactWriteItems.Add(GetUpdateState(_event));
+            var transactWriteItems = new List<TransactWriteItem>
+            {
+                GetInsertEvent(@event),
+                GetUpdateState(@event)
+            };
             request.TransactItems = transactWriteItems;
-            var response = DbClient.TransactWriteItemsAsync(request);
+            var response = _dbClient.TransactWriteItemsAsync(request);
             response.Wait();
         }
     }

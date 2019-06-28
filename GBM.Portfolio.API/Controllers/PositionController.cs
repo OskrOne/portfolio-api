@@ -1,7 +1,6 @@
-﻿using GBM.Portfolio.DataProvider;
-using GBM.Portfolio.Model;
+﻿using GBM.Portfolio.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using GBM.Portfolio.Domain.Services;
 
 namespace GBM.Portfolio.DataAccess.Controllers
 {
@@ -9,25 +8,17 @@ namespace GBM.Portfolio.DataAccess.Controllers
     [ApiController]
     public class PositionController : ControllerBase
     {
-        private ProviderConfig ProviderConfig;
+        private readonly IPortfolioService _portfolioService;
 
-        public PositionController(IConfiguration configuration)
-        {
-            ProviderConfig = new ProviderConfig()
-            {
-                Local = bool.Parse(configuration["AWS:Local"]),
-                DynamoDBURL = configuration["AWS:DynamoDBURL"],
-                AwsAccessKeyId = configuration["AWS:AccessKeyId"],
-                AwsSecretAccessKey = configuration["AWS:SecretAccessKey"],
-                RegionEndpoint = Amazon.RegionEndpoint.USWest2 // TODO: Include this configuration in AppSettings
-            };
+        public PositionController(IPortfolioService portfolioService) {
+            _portfolioService = portfolioService;
         }
 
         [HttpGet("{contractId}/position")]
-        public ActionResult<Contract> Get(string contractId)
+        public ActionResult<Domain.Models.Portfolio> Get(string contractId)
         {
-            var provider = new PortfolioProvider(ProviderConfig);
-            return provider.Get(contractId);
+            var contract = _portfolioService.Get(contractId);
+            return Ok(contract);
         }
     }
 }

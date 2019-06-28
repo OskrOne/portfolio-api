@@ -1,4 +1,4 @@
-﻿namespace GBM.Portfolio.Model
+﻿namespace GBM.Portfolio.Domain.Models
 {
     public class Asset
     {

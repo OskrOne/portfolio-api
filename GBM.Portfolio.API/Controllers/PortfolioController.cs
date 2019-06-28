@@ -1,10 +1,9 @@
 ﻿using System;
-using GBM.Portfolio.API.EventSourcing.Handlers;
-using GBM.Portfolio.DataProvider;
-using GBM.Portfolio.Model.Events;
+using GBM.Portfolio.Domain.Models.Events;
+using GBM.Portfolio.Domain.Repositories;
+using GBM.Portfolio.Domain.Repositories.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using EventHandler = GBM.Portfolio.API.EventSourcing.Handlers.EventHandler;
 
 namespace GBM.Portfolio.API.Controllers
 {
@@ -12,11 +11,11 @@ namespace GBM.Portfolio.API.Controllers
     [ApiController]
     public class PortfolioController : ControllerBase
     {
-        private ProviderConfig ProviderConfig;
+        private RepositoryConfig ProviderConfig;
 
         public PortfolioController(IConfiguration configuration)
         {
-            ProviderConfig = new ProviderConfig()
+            ProviderConfig = new RepositoryConfig()
             {
                 Local = bool.Parse(configuration["AWS:Local"]),
                 DynamoDBURL = configuration["AWS:DynamoDBURL"],
@@ -26,24 +25,27 @@ namespace GBM.Portfolio.API.Controllers
             };
         }
 
-
         [HttpPut("event")]
-        public void Event([FromBody] Event @event)
+        public ActionResult Event([FromBody] Event @event)
         {
-            var handler = GetHandler(@event);
             @event.TimeSpan = GetTimestamp(DateTime.Now);
+            var handler = GetHandler(@event);
             handler.Handle(@event);
+            return Ok();
         }
 
-        private EventHandler GetHandler(Event @event)
+        private IHandleEvent GetHandler(Event @event)
         {
-            if (@event.GetType() == typeof(EventFreeze)) {
+            if (@event.GetType() == typeof(Freeze))
+            {
                 return new FreezeEvent(ProviderConfig);
             }
 
-            if (@event.GetType() == typeof(EventAddMoney)) {
+            if (@event.GetType() == typeof(AddMoney))
+            {
                 return new AddMoneyEvent(ProviderConfig);
             }
+
             return null; // TODO: Handle exceptions
         }
 

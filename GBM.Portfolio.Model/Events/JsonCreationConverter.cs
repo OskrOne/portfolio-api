@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace GBM.Portfolio.Model.Events
+namespace GBM.Portfolio.Domain.Models.Events
 {
     internal abstract class JsonCreationConverter<T> : JsonConverter
     {

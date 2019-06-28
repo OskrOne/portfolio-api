@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.101.30" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GBM.Portfolio.Domain.Repositories\GBM.Portfolio.Domain.Repositories.csproj" />
+    <ProjectReference Include="..\GBM.Portfolio.Domain.Events\GBM.Portfolio.Domain.Events.csproj" />
     <ProjectReference Include="..\GBM.Portfolio.Model\GBM.Portfolio.Domain.Models.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GBM.Portfolio.Model.Events
+﻿namespace GBM.Portfolio.Domain.Models.Events
 {
-    public class EventFreeze : Event
+    public class Freeze : Event
     {
         public string InstrumentId { get; set; }
         public string InstrumentName { get; set; }

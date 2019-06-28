@@ -2,60 +2,52 @@
 using System.Collections.Generic;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using GBM.Portfolio.Domain.Models;
-using GBM.Portfolio.Model;
 
-namespace GBM.Portfolio.DataProvider
+namespace GBM.Portfolio.Domain.Repositories
 {
-    public class PortfolioProvider
+    public class PortfolioRepository : BaseRepository, IPortfolioRepository
     {
-        private readonly AmazonDynamoDBClient DbClient;
-        private readonly string ContractTableName = "Portfolio";
+        private readonly string _tableName = "Portfolio";
 
-        public PortfolioProvider() {
-            DbClient = new AmazonDynamoDBClient();
-        }
+        public PortfolioRepository() : base() { }
 
-        public PortfolioProvider(ProviderConfig config) {
-            DbClient = Provider.GetAmazonDynamoDBClient(config);
-        }
+        public PortfolioRepository(IAmazonDynamoDB client) : base(client) { }
 
-        public PortfolioProvider(AmazonDynamoDBClient client) {
-            DbClient = client;
-        }
+        public PortfolioRepository(RepositoryConfig config) : base(config) { }
 
-        public Contract Get(string contractId) {
-
-            SetupDatabase();
-
+        public Domain.Models.Portfolio Get(string contractId)
+        {
             var request = new GetItemRequest()
             {
-                TableName = ContractTableName,
+                TableName = _tableName,
                 Key = new Dictionary<string, AttributeValue>()
                 {
                     { "ContractId", new AttributeValue(){ S = contractId } }
                 }
             };
 
-            var result = DbClient.GetItemAsync(request);
+            var result = _dbClient.GetItemAsync(request);
             result.Wait();
 
-            if (result.IsCompletedSuccessfully) {
+            if (result.IsCompletedSuccessfully)
+            {
                 var contract = GetContract(result.Result.Item);
-                var assetProvider = new AssetProvider(DbClient);
-                contract.Assets = assetProvider.GetAssets(contract.ContractId);
+                var assetProvider = new AssetRepository(_dbClient);
+                contract.Assets = assetProvider.GetAll(contract.ContractId).ToArray();
                 return contract;
             }
 
             throw new ApplicationException("Error reading Contract information", result.Exception);
         }
 
-        private Contract GetContract(Dictionary<string, AttributeValue> item)
+        private Domain.Models.Portfolio GetContract(Dictionary<string, AttributeValue> item)
         {
-            var contract = new Contract();
+            // Maybe we should implement a mapper
+            var contract = new Models.Portfolio();
             contract.ContractId = item["ContractId"].S;
 
-            if (item.ContainsKey("BuyingPower")) {
+            if (item.ContainsKey("BuyingPower"))
+            {
                 contract.BuyingPower = Decimal.Parse(item["BuyingPower"].N);
             }
 
@@ -64,7 +56,7 @@ namespace GBM.Portfolio.DataProvider
 
         private void SetupDatabase()
         {
-            var result = DbClient.ListTablesAsync();
+            var result = _dbClient.ListTablesAsync();
             result.Wait();
             var tables = result.Result;
 
@@ -77,7 +69,8 @@ namespace GBM.Portfolio.DataProvider
 
         private void InsertIntoTables()
         {
-            var request = new PutItemRequest() {
+            var request = new PutItemRequest()
+            {
                 TableName = "Contract",
                 Item = new Dictionary<string, AttributeValue>() {
                     { "ContractId", new AttributeValue("A100") },
@@ -85,7 +78,7 @@ namespace GBM.Portfolio.DataProvider
                 }
             };
 
-            var result = DbClient.PutItemAsync(request);
+            var result = _dbClient.PutItemAsync(request);
             result.Wait();
 
             request = new PutItemRequest()
@@ -101,7 +94,7 @@ namespace GBM.Portfolio.DataProvider
                 }
             };
 
-            result = DbClient.PutItemAsync(request);
+            result = _dbClient.PutItemAsync(request);
             result.Wait();
         }
 
@@ -119,7 +112,7 @@ namespace GBM.Portfolio.DataProvider
                 ProvisionedThroughput = new ProvisionedThroughput(5, 5)
             };
 
-            var resultCreateTable = DbClient.CreateTableAsync(request);
+            var resultCreateTable = _dbClient.CreateTableAsync(request);
             resultCreateTable.Wait();
 
             request = new CreateTableRequest()
@@ -134,7 +127,7 @@ namespace GBM.Portfolio.DataProvider
                 ProvisionedThroughput = new ProvisionedThroughput(5, 5)
             };
 
-            resultCreateTable = DbClient.CreateTableAsync(request);
+            resultCreateTable = _dbClient.CreateTableAsync(request);
             resultCreateTable.Wait();
         }
     }

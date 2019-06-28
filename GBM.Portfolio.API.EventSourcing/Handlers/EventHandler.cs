@@ -1,7 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using GBM.Portfolio.DataProvider;
-using GBM.Portfolio.Model.Events;
+using GBM.Portfolio.Domain.Models.Events;
+using GBM.Portfolio.Domain.Repositories;
 
 namespace GBM.Portfolio.API.EventSourcing.Handlers
 {
@@ -15,9 +15,9 @@ namespace GBM.Portfolio.API.EventSourcing.Handlers
             DbClient = new AmazonDynamoDBClient();
         }
 
-        public EventHandler(ProviderConfig config)
+        public EventHandler(RepositoryConfig config)
         {
-            DbClient = Provider.GetAmazonDynamoDBClient(config);
+            DbClient = Repository.GetAmazonDynamoDBClient(config);
         }
 
         public EventHandler(IAmazonDynamoDB client)

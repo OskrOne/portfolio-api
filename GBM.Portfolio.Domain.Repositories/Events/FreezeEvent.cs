@@ -4,30 +4,24 @@ using Amazon.DynamoDBv2.Model;
 using GBM.Portfolio.Domain.Models.Events;
 using GBM.Portfolio.Domain.Repositories;
 
-namespace GBM.Portfolio.API.EventSourcing.Handlers
+namespace GBM.Portfolio.Domain.Repositories.Events
 {
-    public class FreezeEvent : EventHandler
+    public class FreezeEvent : BaseRepository, IHandleEvent
     {
-        public FreezeEvent() : base()
-        {
-        }
+        public FreezeEvent() : base() { }
 
-        public FreezeEvent(RepositoryConfig config) : base(config)
-        {
-        }
+        public FreezeEvent(RepositoryConfig config) : base(config) { }
 
-        public FreezeEvent(IAmazonDynamoDB client) : base(client)
-        {
-        }
+        public FreezeEvent(IAmazonDynamoDB client) : base(client) { }
 
-        public override TransactWriteItem GetInsertEvent(Event _event)
+        private TransactWriteItem GetInsertEvent(Event _event)
         {
-            var @event = (Freeze)_event;
+            var @event = (Models.Events.Freeze)_event;
             var transact = new TransactWriteItem()
             {
                 Put = new Put()
                 {
-                    TableName = Constants.PortfolioEventTableName,
+                    TableName = Tables.PortfolioEvents,
                     Item = new Dictionary<string, AttributeValue>() {
                         { "ContractId", new AttributeValue() { S = @event.ContractId } },
                         { "TimeStamp", new AttributeValue(){ S = @event.TimeSpan.ToString() } },
@@ -44,14 +38,14 @@ namespace GBM.Portfolio.API.EventSourcing.Handlers
             return transact;
         }
 
-        public override TransactWriteItem GetUpdateState(Event _event)
+        private TransactWriteItem GetUpdateState(Event _event)
         {
-            var @event = (Freeze)_event;
+            var @event = (Models.Events.Freeze)_event;
             var transact = new TransactWriteItem()
             {
                 Update = new Update()
                 {
-                    TableName = Constants.PortfolioTableName,
+                    TableName = Tables.Portfolio,
                     Key = new Dictionary<string, AttributeValue>() {
                         { "ContractId", new AttributeValue() { S = @event.ContractId } }
                     },
@@ -66,17 +60,16 @@ namespace GBM.Portfolio.API.EventSourcing.Handlers
             return transact;
         }
 
-        public override void Handle(Event _event)
+        public void Handle(Event _event)
         {
             TransactWriteItemsRequest request = new TransactWriteItemsRequest();
             List<TransactWriteItem> transactWriteItems = new List<TransactWriteItem>();
 
             transactWriteItems.Add(GetInsertEvent(_event));
             transactWriteItems.Add(GetUpdateState(_event));
-
             request.TransactItems = transactWriteItems;
 
-            var response = DbClient.TransactWriteItemsAsync(request);
+            var response = _dbClient.TransactWriteItemsAsync(request);
             response.Wait();
 
             // TODO: Handle exceptions

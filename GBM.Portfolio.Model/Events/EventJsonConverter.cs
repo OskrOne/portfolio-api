@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace GBM.Portfolio.Model.Events
+namespace GBM.Portfolio.Domain.Models.Events
 {
     internal class EventJsonConverter : JsonCreationConverter<Event>
     {
@@ -11,11 +11,11 @@ namespace GBM.Portfolio.Model.Events
 
             if (jObject["EventType"] != null && jObject["EventType"].Value<string>() == EventType.AddMoney.ToString())
             {
-                return new EventAddMoney();
+                return new AddMoney();
             }
             else if (jObject["EventType"] != null && jObject["EventType"].Value<string>() == EventType.Freeze.ToString())
             {
-                return new EventFreeze();
+                return new Freeze();
             }
             else {
                 return new Event();
